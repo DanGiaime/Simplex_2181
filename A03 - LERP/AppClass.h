@@ -44,6 +44,10 @@ private:
 	CameraManager* m_pCameraMngr = nullptr; //Singleton for the camera manager
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
+	std::vector<std::vector<vector3>> m_stop_points_vectors; //All stop_points for all shapes
+	std::vector<vector3> m_v3CurrentPos_vec; //CurrentPosition of every circle
+	std::vector<vector3> m_prevPos_vec; //Previous stop point of every circle
+	std::vector<int> m_currStopIndex_vec; //current stop point index for every shape/circle
 
 public:
 #pragma region Constructor / Run / Destructor
