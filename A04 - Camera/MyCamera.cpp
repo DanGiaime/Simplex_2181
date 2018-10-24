@@ -16,6 +16,9 @@ void Simplex::MyCamera::SetHorizontalPlanes(vector2 a_v2Horizontal) { m_v2Horizo
 void Simplex::MyCamera::SetVerticalPlanes(vector2 a_v2Vertical) { m_v2Vertical = a_v2Vertical; }
 matrix4 Simplex::MyCamera::GetProjectionMatrix(void) { return m_m4Projection; }
 matrix4 Simplex::MyCamera::GetViewMatrix(void) { CalculateViewMatrix(); return m_m4View; }
+vector3 Simplex::MyCamera::GetForward(void) { return glm::normalize(m_v3Position - m_v3Target); }
+vector3 Simplex::MyCamera::GetUp(void) { return glm::normalize(m_v3Above - m_v3Position); }
+vector3 Simplex::MyCamera::GetRight(void) { return glm::normalize(glm::cross(GetUp(), GetForward())); }
 
 Simplex::MyCamera::MyCamera()
 {
@@ -152,11 +155,35 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 
 void MyCamera::MoveForward(float a_fDistance)
 {
-	//The following is just an example and does not take in account the forward vector (AKA view vector)
-	m_v3Position += vector3(0.0f, 0.0f,-a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
-	m_v3Above += vector3(0.0f, 0.0f, -a_fDistance);
+	vector3 forward = GetForward() * -a_fDistance;
+	m_v3Position += forward;
+	m_v3Target += forward;
+	m_v3Above += forward;
 }
 
-void MyCamera::MoveVertical(float a_fDistance){}//Needs to be defined
-void MyCamera::MoveSideways(float a_fDistance){}//Needs to be defined
+void MyCamera::MoveVertical(float a_fDistance){
+	vector3 up = GetUp() * -a_fDistance;
+	m_v3Position += up;
+	m_v3Target += up;
+	m_v3Above += up;
+}//Needs to be defined
+
+void MyCamera::MoveSideways(float a_fDistance)
+{
+	vector3 right = GetRight() * -a_fDistance;
+	m_v3Position += right;
+	m_v3Target += right;
+	m_v3Above += right;
+}//Needs to be defined
+
+void MyCamera::RotateCamera(float fAngleX, float fAngleY)
+{
+	//m_qRotation *= rotation;
+	quaternion rotation = IDENTITY_QUAT;
+
+	SetPositionTargetAndUpward(
+		m_v3Position,
+		glm::rotate(rotation, fAngleX, GetUp()) *  m_v3Target,
+		/*glm::rotate(rotation, fAngleY, GetRight()) **/  GetUp()
+	);
+}

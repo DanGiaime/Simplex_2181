@@ -28,6 +28,7 @@ class MyCamera
 
 	matrix4 m_m4View; //View matrix
 	matrix4 m_m4Projection; //Projection Matrix
+	quaternion m_qRotation; //Rotation quaternion
 public:
 	/*
 	USAGE: Constructor
@@ -230,6 +231,26 @@ public:
 	OUTPUT: ---
 	*/
 	void MoveSideways(float a_fDistance = 0.1f);
+	/*
+	USAGE: Returns forward vector of camera
+	OUTPUT: ---
+	*/
+	vector3 GetForward(void);
+	/*
+	USAGE: Returns up vector of camera
+	OUTPUT: ---
+	*/
+	vector3 GetUp(void);
+	/*
+	USAGE: Returns right vector of camera
+	OUTPUT: ---
+	*/
+	vector3 GetRight(void);
+	/*
+	USAGE: Rotates Camera by angleX and angleY
+	OUTPUT: ---
+	*/
+	void RotateCamera(float fAngleX, float fAngleY);
 };
 
 } //namespace Simplex
