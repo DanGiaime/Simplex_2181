@@ -370,7 +370,7 @@ void Application::CameraRotation(float a_fSpeed)
 	}
 	//Change the Yaw and the Pitch of the camera
 
-	m_pCamera->RotateCamera(fAngleX, fAngleY);
+	m_pCamera->Rotate(fAngleX, fAngleY);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
 //Keyboard

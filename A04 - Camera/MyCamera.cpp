@@ -176,14 +176,28 @@ void MyCamera::MoveSideways(float a_fDistance)
 	m_v3Above += right;
 }//Needs to be defined
 
-void MyCamera::RotateCamera(float fAngleX, float fAngleY)
+void MyCamera::Rotate(float pitch, float yaw)
 {
-	//m_qRotation *= rotation;
-	quaternion rotation = IDENTITY_QUAT;
+	// Update pitch + yaw
+	m_pitch += pitch;
+	m_yaw += yaw;
 
-	SetPositionTargetAndUpward(
-		m_v3Position,
-		glm::rotate(rotation, fAngleX, GetUp()) *  m_v3Target,
-		/*glm::rotate(rotation, fAngleY, GetRight()) **/  GetUp()
-	);
+	// prevent gimbal lock
+	if (m_pitch > 89.0f)
+		m_pitch = 89.0f;
+	if (m_pitch < -89.0f)
+		m_pitch = -89.0f;
+
+	// Get total rotation (new forward)
+	vector3 direction(0.0f, 0.0f, 0.0f);
+	direction.x = cos(glm::radians(m_pitch)) * cos(glm::radians(m_yaw));
+	direction.y = sin(glm::radians(m_pitch));
+	direction.z = cos(glm::radians(m_pitch)) * sin(glm::radians(m_yaw));
+
+	// Set new forward
+	m_v3Target = m_v3Position + direction;
+
+	CalculateProjectionMatrix();
 }
+
+
